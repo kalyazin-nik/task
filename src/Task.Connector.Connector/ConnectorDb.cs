@@ -1,4 +1,6 @@
-﻿using Task.Connector.DependencyInjection;
+﻿using System.Data.Common;
+using Task.Connector.AppServices.User.Service;
+using Task.Connector.DependencyInjection;
 using Task.Integration.Data.Models;
 using Task.Integration.Data.Models.Models;
 
@@ -6,20 +8,21 @@ namespace Task.Connector.Connector;
 
 public class ConnectorDb : IConnector
 {
+    private const double SecondsTimeSpan = 15;
+    private IUserService _userService = null!;
+
     public ILogger Logger { get; set; } = null!;
 
     /// <summary>
     /// Конфигурация коннектора через строку подключения.
     /// </summary>
-    /// <remarks>
-    /// Настройки для подключения к ресурсу: строка подключения к бд,<br />
-    /// путь к хосту с логином и паролем, дополнительные параметры конфигурации бизнес-логики и тд,<br />
-    /// формат любой, например: <see langword="key1=value1; key2=value2"/>.
-    /// </remarks>
     /// <param name="connectionString">Строка подключения.</param>
     public void StartUp(string connectionString)
     {
-        ServiceLocator.SetConnectionString(connectionString);
+        var dbConnection = new DbConnectionStringBuilder { ConnectionString = connectionString };
+        ServiceLocator.Initialize(dbConnection);
+
+        _userService = ServiceLocator.GetService<IUserService>();
         Logger = ServiceLocator.GetService<ILogger>();
     }
 
@@ -27,9 +30,9 @@ public class ConnectorDb : IConnector
     /// Создать пользователя с набором свойств по умолчанию.
     /// </summary>
     /// <param name="user">Модель создания пользователя.</param>
-    public void CreateUser(UserToCreate user)
+    public async void CreateUser(UserToCreate user)
     {
-        Logger.Debug("проверка");
+        await _userService.CreateAsync(user, GetCancellationToken(SecondsTimeSpan));
     }
 
     /// <summary>
@@ -108,5 +111,10 @@ public class ConnectorDb : IConnector
     public IEnumerable<string> GetUserPermissions(string userLogin)
     {
         throw new NotImplementedException();
+    }
+
+    private static CancellationToken GetCancellationToken(double secondsTimeSpan)
+    {
+        return new CancellationTokenSource(TimeSpan.FromSeconds(secondsTimeSpan)).Token;
     }
 }

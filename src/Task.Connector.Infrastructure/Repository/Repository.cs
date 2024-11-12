@@ -1,62 +1,58 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Task.Connector.Domain;
 using Tasks = System.Threading.Tasks;
 
 namespace Task.Connector.Infrastructure.Repository;
 
-public class Repository<TEntity, TContext> : IRepository<TEntity, TContext>
-    where TEntity : EntityBase
-    where TContext : DbContext
+public class Repository<TContext> : IRepository<TContext> where TContext : DbContext
 {
     protected TContext DbContext;
-    protected DbSet<TEntity> DbSet;
 
     public Repository(TContext dbContext)
     {
         DbContext = dbContext;
-        DbSet = dbContext.Set<TEntity>();
     }
 
-    public async Tasks.Task CreateAsync(TEntity entity, CancellationToken cancellationToken)
+    public async Tasks.Task CreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase
     {
-        await DbSet.AddAsync(entity, cancellationToken);
+        await DbContext.Set<TEntity>().AddAsync(entity, cancellationToken);
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<TEntity?> FindAsync(object id, CancellationToken cancellationToken)
+    public async Task<TEntity?> FindAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : EntityBase
     {
-        return await DbSet.FindAsync(id, cancellationToken);
+        return await DbContext.Set<TEntity>().FindAsync(id, cancellationToken);
     }
 
-    public IQueryable<TEntity> GetAll()
+    public IQueryable<TEntity> GetAll<TEntity>() where TEntity : EntityBase
     {
-        return DbSet.AsQueryable();
+        return DbContext.Set<TEntity>().AsQueryable();
     }
 
-    public IQueryable<TEntity> GetByPredicate(Expression<Func<TEntity, bool>> predicate)
+    public IQueryable<TEntity> GetByPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : EntityBase
     {
-        return DbSet.Where(predicate).AsQueryable();
+        return DbContext.Set<TEntity>().Where(predicate).AsQueryable();
     }
 
-    public async Tasks.Task RemoveAsync(object id, CancellationToken cancellationToken)
+    public async Tasks.Task RemoveAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : EntityBase
     {
-        if (await DbSet.FindAsync(id, cancellationToken) is TEntity entity)
+        if (await DbContext.Set<TEntity>().FindAsync(id, cancellationToken) is TEntity entity)
         {
-            DbSet.Remove(entity);
+            DbContext.Set<TEntity>().Remove(entity);
             await DbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
-    public async Tasks.Task RemoveAsync(TEntity entity, CancellationToken cancellationToken)
+    public async Tasks.Task RemoveAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase
     {
-        DbSet.Remove(entity);
+        DbContext.Set<TEntity>().Remove(entity);
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public async Tasks.Task UpdateAsync(TEntity entity, CancellationToken cancellationToken)
+    public async Tasks.Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase
     {
-        DbSet.Update(entity);
+        DbContext.Set<TEntity>().Update(entity);
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 }

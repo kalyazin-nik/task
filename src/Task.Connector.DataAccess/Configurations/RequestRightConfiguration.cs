@@ -8,9 +8,10 @@ internal class RequestRightConfiguration : IEntityTypeConfiguration<RequestRight
 {
     public void Configure(EntityTypeBuilder<RequestRight> builder)
     {
-        builder.ToTable("request_right", "task");
+        builder.ToTable("RequestRight");
 
         builder.HasKey(x => x.Id);
+
         builder.HasIndex(x => x.Id);
 
         builder.Property(x => x.Id)

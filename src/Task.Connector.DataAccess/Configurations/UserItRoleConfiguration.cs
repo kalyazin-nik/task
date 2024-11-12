@@ -8,7 +8,7 @@ internal class UserItRoleConfiguration : IEntityTypeConfiguration<UserItRole>
 {
     public void Configure(EntityTypeBuilder<UserItRole> builder)
     {
-        builder.ToTable("user_it_role", "task");
+        builder.ToTable("UserITRole");
 
         builder.HasKey(x => new { x.UserId, x.RoleId });
 
@@ -18,12 +18,12 @@ internal class UserItRoleConfiguration : IEntityTypeConfiguration<UserItRole>
 
         builder.Property(x => x.UserId)
             .HasColumnType("varchar")
-            .HasColumnName("user_id")
+            .HasColumnName("userId")
             .HasMaxLength(22)
             .IsRequired();
 
         builder.Property(x => x.RoleId)
-            .HasColumnName("role_id")
+            .HasColumnName("roleId")
             .IsRequired();
     }
 }
