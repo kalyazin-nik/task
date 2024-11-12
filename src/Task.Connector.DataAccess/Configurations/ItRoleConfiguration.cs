@@ -8,10 +8,10 @@ internal class ItRoleConfiguration : IEntityTypeConfiguration<ItRole>
 {
     public void Configure(EntityTypeBuilder<ItRole> builder)
     {
-        
-        builder.ToTable("it_role", "task");
+        builder.ToTable("ItRole");
 
         builder.HasKey(x => x.Id);
+
         builder.HasIndex(x => x.Id);
 
         builder.Property(x => x.Id)
@@ -26,7 +26,7 @@ internal class ItRoleConfiguration : IEntityTypeConfiguration<ItRole>
 
         builder.Property(x => x.CorporatePhoneNumber)
             .HasColumnType("varchar")
-            .HasColumnName("corporate_phone_number")
+            .HasColumnName("corporatePhoneNumber")
             .HasMaxLength(4)
             .IsRequired();
     }

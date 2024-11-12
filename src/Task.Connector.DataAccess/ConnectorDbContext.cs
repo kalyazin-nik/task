@@ -1,11 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Task.Connector.DataAccess.Configurations;
 using Task.Connector.Domain;
+using Task.Connector.Infrastructure.Common.DbModels;
 
 namespace Task.Connector.DataAccess;
 
 public class ConnectorDbContext : DbContext
 {
+    private string? _schema;
+
     public DbSet<ItRole> ItRoles { get; set; }
     public DbSet<Security> Passwords { get; set; }
     public DbSet<RequestRight> RequestRights { get; set; }
@@ -13,10 +17,15 @@ public class ConnectorDbContext : DbContext
     public DbSet<UserItRole> UsersItRoles { get; set; }
     public DbSet<UserRequestRight> UserRequestRights { get; set; }
 
-    public ConnectorDbContext(DbContextOptions options) : base(options) { }
+    public ConnectorDbContext(DbContextOptions options, IOptions<DbSchema> dbSchema) : base(options)
+    {
+        _schema = dbSchema.Value?.Name;
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.HasDefaultSchema(_schema);
+
         modelBuilder.ApplyConfiguration(new ItRoleConfiguration());
         modelBuilder.ApplyConfiguration(new SecurityConfiguration());
         modelBuilder.ApplyConfiguration(new RequestRightConfiguration());

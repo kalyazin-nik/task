@@ -1,25 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
 using Task.Connector.Domain;
 using Tasks = System.Threading.Tasks;
 
 namespace Task.Connector.Infrastructure.Repository;
 
-public interface IRepository<TEntity, TContext>
-    where TEntity : EntityBase
-    where TContext : DbContext
+public interface IRepository<TContext> where TContext : DbContext
 {
-    Tasks.Task CreateAsync(TEntity entity, CancellationToken cancellationToken);
+    Tasks.Task CreateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase;
 
-    Task<TEntity?> FindAsync(object id, CancellationToken cancellationToken);
+    Task<TEntity?> FindAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : EntityBase;
 
-    IQueryable<TEntity> GetAll();
+    IQueryable<TEntity> GetAll<TEntity>() where TEntity : EntityBase;
 
-    IQueryable<TEntity> GetByPredicate(Expression<Func<TEntity, bool>> predicate);
+    IQueryable<TEntity> GetByPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : EntityBase;
 
-    Tasks.Task RemoveAsync(object id, CancellationToken cancellationToken);
+    Tasks.Task RemoveAsync<TEntity>(object id, CancellationToken cancellationToken) where TEntity : EntityBase;
 
-    Tasks.Task RemoveAsync(TEntity entity, CancellationToken cancellationToken);
+    Tasks.Task RemoveAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase;
 
-    Tasks.Task UpdateAsync(TEntity entity, CancellationToken cancellationToken);
+    Tasks.Task UpdateAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : EntityBase;
 }

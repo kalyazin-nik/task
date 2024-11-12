@@ -8,7 +8,7 @@ internal class UserRequestRightConfiguration : IEntityTypeConfiguration<UserRequ
 {
     public void Configure(EntityTypeBuilder<UserRequestRight> builder)
     {
-        builder.ToTable("user_request_right", "task");
+        builder.ToTable("UserRequestRight");
 
         builder.HasKey(x => new { x.UserId, x.RightId });
 
@@ -18,12 +18,12 @@ internal class UserRequestRightConfiguration : IEntityTypeConfiguration<UserRequ
 
         builder.Property(x => x.UserId)
             .HasColumnType("varchar")
-            .HasColumnName("user_id")
+            .HasColumnName("userId")
             .HasMaxLength(22)
             .IsRequired();
 
         builder.Property(x => x.RightId)
-            .HasColumnName("right_id")
+            .HasColumnName("rightId")
             .IsRequired();
     }
 }

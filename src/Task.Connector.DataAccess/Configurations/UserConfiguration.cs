@@ -8,9 +8,10 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-        builder.ToTable("users", "task");
+        builder.ToTable("User");
 
         builder.HasKey(x => x.Login);
+
         builder.HasIndex(x => x.Login);
 
         builder.Property(x => x.Login)
@@ -21,30 +22,30 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.LastName)
             .HasColumnType("varchar")
-            .HasColumnName("last_name")
+            .HasColumnName("lastName")
             .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(x => x.FirstName)
             .HasColumnType("varchar")
-            .HasColumnName("first_name")
+            .HasColumnName("firstName")
             .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(x => x.MiddleName)
             .HasColumnType("varchar")
-            .HasColumnName("middle_name")
+            .HasColumnName("middleName")
             .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(x => x.TelephoneNumber)
             .HasColumnType("varchar")
-            .HasColumnName("telephone_number")
+            .HasColumnName("telephoneNumber")
             .HasMaxLength(20)
             .IsRequired();
 
         builder.Property(x => x.IsLead)
-            .HasColumnName("is_lead")
+            .HasColumnName("isLead")
             .IsRequired();
     }
 }

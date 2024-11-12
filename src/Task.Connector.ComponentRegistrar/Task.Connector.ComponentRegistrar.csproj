@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Task.Connector.AppServices\Task.Connector.AppServices.csproj" />
     <ProjectReference Include="..\Task.Connector.DataAccess\Task.Connector.DataAccess.csproj" />
     <ProjectReference Include="..\Task.Connector.Infrastructure\Task.Connector.Infrastructure.csproj" />
   </ItemGroup>
