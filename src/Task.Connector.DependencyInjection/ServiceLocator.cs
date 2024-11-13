@@ -12,10 +12,14 @@ public static class ServiceLocator
     private static string? _connectionString;
     private static string? _provider;
     private static string? _schema;
-    private static IServiceProvider _serviceProvider;
+    private static IServiceProvider _serviceProvider = null!;
 
-    static ServiceLocator()
+    public static void Initialize(DbConnectionStringBuilder dbConnection)
     {
+        _connectionString = dbConnection["connectionstring"]?.ToString();
+        _provider = dbConnection["provider"]?.ToString();
+        _schema = dbConnection["schemaname"]?.ToString();
+
         var services = new ServiceCollection();
         services.Configure<DbSchema>(options => options.Name = _schema);
         services.Configure<DbProvider>(options => options.Name = _provider);
@@ -23,13 +27,6 @@ public static class ServiceLocator
         services.AddApplicationService();
 
         _serviceProvider = services.BuildServiceProvider();
-    }
-
-    public static void Initialize(DbConnectionStringBuilder dbConnection)
-    {
-        _connectionString = dbConnection["connectionstring"]?.ToString();
-        _provider = dbConnection["provider"]?.ToString();
-        _schema = dbConnection["schemaname"]?.ToString();
     }
 
     public static T GetService<T>()

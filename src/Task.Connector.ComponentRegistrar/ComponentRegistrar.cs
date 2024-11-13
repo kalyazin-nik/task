@@ -17,6 +17,8 @@ public static class ComponentRegistrar
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         return services;
     }
 }
