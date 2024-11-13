@@ -1,9 +1,16 @@
 ﻿using Task.Integration.Data.Models.Models;
-using Tasks = System.Threading.Tasks;
 
 namespace Task.Connector.AppServices.User.Service;
 
 public interface IUserService
 {
-    Tasks.Task CreateAsync(UserToCreate model, CancellationToken cancellationToken);
+    void CreateAsync(UserToCreate userToCreate);
+
+    bool IsExistAsync(string login);
+
+    IEnumerable<Property> GetAllProperties();
+
+    IEnumerable<UserProperty> GetUserPropertiesAsync(string login);
+
+    void UpdateUserProperties(string login, IEnumerable<UserProperty> properties);
 }

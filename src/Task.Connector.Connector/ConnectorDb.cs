@@ -23,16 +23,15 @@ public class ConnectorDb : IConnector
         ServiceLocator.Initialize(dbConnection);
 
         _userService = ServiceLocator.GetService<IUserService>();
-        Logger = ServiceLocator.GetService<ILogger>();
     }
 
     /// <summary>
     /// Создать пользователя с набором свойств по умолчанию.
     /// </summary>
     /// <param name="user">Модель создания пользователя.</param>
-    public async void CreateUser(UserToCreate user)
+    public void CreateUser(UserToCreate user)
     {
-        await _userService.CreateAsync(user, GetCancellationToken(SecondsTimeSpan));
+        _userService.CreateAsync(user);
     }
 
     /// <summary>
@@ -42,16 +41,16 @@ public class ConnectorDb : IConnector
     /// <returns>Вернёт <see langword="true"/>, если пользователь существует, иначе <see langword="false"/>.</returns>
     public bool IsUserExists(string userLogin)
     {
-        throw new NotImplementedException();
+        return _userService.IsExistAsync(userLogin);
     }
 
     /// <summary>
     /// Получение всех свойств пользователя.
     /// </summary>
     /// <returns>Коллекция свойств.</returns>
-    public IEnumerable<Property> GetAllProperties() // Метод позволяет получить все свойства пользователя(смотри Описание системы), пароль тоже считать свойством
+    public IEnumerable<Property> GetAllProperties()
     {
-        throw new NotImplementedException();
+        return _userService.GetAllProperties();
     }
 
     /// <summary>
@@ -61,7 +60,7 @@ public class ConnectorDb : IConnector
     /// <returns>Коллекция значений.</returns>
     public IEnumerable<UserProperty> GetUserProperties(string userLogin)
     {
-        throw new NotImplementedException();
+        return _userService.GetUserPropertiesAsync(userLogin);
     }
 
     /// <summary>
@@ -71,7 +70,7 @@ public class ConnectorDb : IConnector
     /// <param name="userLogin">Логин пользователя.</param>
     public void UpdateUserProperties(IEnumerable<UserProperty> properties, string userLogin)
     {
-        throw new NotImplementedException();
+        _userService.UpdateUserProperties(userLogin, properties);
     }
 
     /// <summary>
@@ -111,10 +110,5 @@ public class ConnectorDb : IConnector
     public IEnumerable<string> GetUserPermissions(string userLogin)
     {
         throw new NotImplementedException();
-    }
-
-    private static CancellationToken GetCancellationToken(double secondsTimeSpan)
-    {
-        return new CancellationTokenSource(TimeSpan.FromSeconds(secondsTimeSpan)).Token;
     }
 }

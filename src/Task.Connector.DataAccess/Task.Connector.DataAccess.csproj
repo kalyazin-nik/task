@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Task.Connector.AppServices\Task.Connector.AppServices.csproj" />
+    <ProjectReference Include="..\Task.Connector.Contract\Task.Connector.Contract.csproj" />
     <ProjectReference Include="..\Task.Connector.Domain\Task.Connector.Domain.csproj" />
     <ProjectReference Include="..\Task.Connector.Infrastructure\Task.Connector.Infrastructure.csproj" />
   </ItemGroup>
