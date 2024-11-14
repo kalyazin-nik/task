@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Task.Connector.Infrastructure\Task.Connector.Infrastructure.csproj" />
     <ProjectReference Include="..\Task.Connector.DependencyInjection\Task.Connector.DependencyInjection.csproj" />
   </ItemGroup>
 

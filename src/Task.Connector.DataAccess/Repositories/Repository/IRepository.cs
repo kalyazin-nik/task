@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Task.Connector.Domain;
 
-namespace Task.Connector.Infrastructure.Repository;
+namespace Task.Connector.DataAccess.Repositories.Repository;
 
 public interface IRepository<TContext> where TContext : DbContext
 {

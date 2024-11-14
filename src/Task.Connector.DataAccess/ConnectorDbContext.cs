@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Options;
 using Task.Connector.DataAccess.Configurations;
 using Task.Connector.Domain;
-using Task.Connector.Infrastructure.Common.DbModels;
+using Task.Connector.Infrastructure.DbModels;
 
 namespace Task.Connector.DataAccess;
 

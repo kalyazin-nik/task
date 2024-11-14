@@ -1,16 +1,19 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Task.Connector.Domain;
+using Task.Integration.Data.Models;
 
-namespace Task.Connector.Infrastructure.Repository;
+namespace Task.Connector.DataAccess.Repositories.Repository;
 
 public class Repository<TContext> : IRepository<TContext> where TContext : DbContext
 {
     protected TContext DbContext;
+    private readonly ILogger? _logger;
 
-    public Repository(TContext dbContext)
+    public Repository(TContext dbContext, ILogger? logger)
     {
         DbContext = dbContext;
+        _logger = logger;
     }
 
     public void CreateAsync<TEntity>(TEntity entity) where TEntity : EntityBase
