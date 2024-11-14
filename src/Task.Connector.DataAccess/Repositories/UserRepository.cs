@@ -2,7 +2,8 @@
 using Task.Connector.AppServices.User.Repository;
 using Task.Connector.Contract.User;
 using Task.Connector.Domain;
-using Task.Connector.Infrastructure.Repository;
+using Task.Connector.DataAccess.Repositories.Repository;
+using Task.Integration.Data.Models;
 
 namespace Task.Connector.DataAccess.Repositories;
 
@@ -10,11 +11,13 @@ public class UserRepository : IUserRepository
 {
     private readonly IRepository<ConnectorDbContext> _repository;
     private readonly IMapper _mapper;
+    private readonly ILogger? _logger;
 
-    public UserRepository(IRepository<ConnectorDbContext> repository, IMapper mapper)
+    public UserRepository(IRepository<ConnectorDbContext> repository, IMapper mapper, ILogger? logger)
     {
         _repository = repository;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public void CreateAsync(UserDto model)

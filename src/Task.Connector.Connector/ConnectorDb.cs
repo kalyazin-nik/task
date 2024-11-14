@@ -6,12 +6,27 @@ using Task.Integration.Data.Models.Models;
 
 namespace Task.Connector.Connector;
 
-public class ConnectorDb : IConnector
+public class ConnectorDb : IConnector, IDisposable
 {
-    private const double SecondsTimeSpan = 15;
-    private IUserService _userService = null!;
+    private bool _disposed = false;
+    private ServiceLocator _serviceLocator = null!;
+    private ILogger _logger = null!;
 
-    public ILogger Logger { get; set; } = null!;
+    public ILogger Logger
+    {
+        get => _logger;
+        set
+        {
+            _logger = value;
+            LoggerChanged(_logger, new EventArgs());
+        }
+    }
+
+    private event EventHandler LoggerChanged = null!;
+    private void ProcessEventLoggerChanged(object sender, EventArgs e)
+    {
+        ServiceReceiver.LoggerImplementation = _logger;
+    }
 
     /// <summary>
     /// Конфигурация коннектора через строку подключения.
@@ -19,10 +34,8 @@ public class ConnectorDb : IConnector
     /// <param name="connectionString">Строка подключения.</param>
     public void StartUp(string connectionString)
     {
-        var dbConnection = new DbConnectionStringBuilder { ConnectionString = connectionString };
-        ServiceLocator.Initialize(dbConnection);
-
-        _userService = ServiceLocator.GetService<IUserService>();
+        LoggerChanged += ProcessEventLoggerChanged!;
+        _serviceLocator = new ServiceLocator(new DbConnectionStringBuilder { ConnectionString = connectionString });
     }
 
     /// <summary>
@@ -31,7 +44,7 @@ public class ConnectorDb : IConnector
     /// <param name="user">Модель создания пользователя.</param>
     public void CreateUser(UserToCreate user)
     {
-        _userService.CreateAsync(user);
+        _serviceLocator.GetService<IUserService>().CreateAsync(user);
     }
 
     /// <summary>
@@ -41,7 +54,7 @@ public class ConnectorDb : IConnector
     /// <returns>Вернёт <see langword="true"/>, если пользователь существует, иначе <see langword="false"/>.</returns>
     public bool IsUserExists(string userLogin)
     {
-        return _userService.IsExistAsync(userLogin);
+        return _serviceLocator.GetService<IUserService>().IsExistAsync(userLogin);
     }
 
     /// <summary>
@@ -50,7 +63,7 @@ public class ConnectorDb : IConnector
     /// <returns>Коллекция свойств.</returns>
     public IEnumerable<Property> GetAllProperties()
     {
-        return _userService.GetAllProperties();
+        return _serviceLocator.GetService<IUserService>().GetAllProperties();
     }
 
     /// <summary>
@@ -60,7 +73,7 @@ public class ConnectorDb : IConnector
     /// <returns>Коллекция значений.</returns>
     public IEnumerable<UserProperty> GetUserProperties(string userLogin)
     {
-        return _userService.GetUserPropertiesAsync(userLogin);
+        return _serviceLocator.GetService<IUserService>().GetUserPropertiesAsync(userLogin);
     }
 
     /// <summary>
@@ -70,7 +83,7 @@ public class ConnectorDb : IConnector
     /// <param name="userLogin">Логин пользователя.</param>
     public void UpdateUserProperties(IEnumerable<UserProperty> properties, string userLogin)
     {
-        _userService.UpdateUserProperties(userLogin, properties);
+        _serviceLocator.GetService<IUserService>().UpdateUserProperties(userLogin, properties);
     }
 
     /// <summary>
@@ -110,5 +123,15 @@ public class ConnectorDb : IConnector
     public IEnumerable<string> GetUserPermissions(string userLogin)
     {
         throw new NotImplementedException();
+    }
+
+    public void Dispose()
+    {
+        if (!_disposed)
+        {
+            _disposed = true;
+            _serviceLocator.Dispose();
+            GC.SuppressFinalize(this);
+        }
     }
 }
