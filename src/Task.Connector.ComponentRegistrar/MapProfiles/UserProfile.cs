@@ -5,8 +5,14 @@ using Task.Integration.Data.Models.Models;
 
 namespace Task.Connector.ComponentRegistrar.MapProfiles;
 
+/// <summary>
+/// Профиль пользователя.
+/// </summary>
 public class UserProfile : Profile
 {
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="UserProfile"/>.
+    /// </summary>
     public UserProfile()
     {
         CreateMap<UserToCreate, UserDto>(MemberList.None)

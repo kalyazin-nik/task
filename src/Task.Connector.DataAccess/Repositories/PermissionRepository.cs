@@ -7,17 +7,26 @@ using Task.Integration.Data.Models;
 
 namespace Task.Connector.DataAccess.Repositories;
 
+/// <summary>
+/// Репозторий прав и ролей.
+/// </summary>
 public class PermissionRepository : IPermissionRepository
 {
     private readonly IRepository<ConnectorDbContext> _repository;
     private readonly ILogger _logger;
 
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="PermissionRepository"/>.
+    /// </summary>
+    /// <param name="repository">Репозиторий.</param>
+    /// <param name="logger">Логгер.</param>
     public PermissionRepository(IRepository<ConnectorDbContext> repository, ILogger logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
+    /// <inheritdoc />
     public IEnumerable<Integration.Data.Models.Models.Permission> GetAllPermissions()
     {
         var permissions = new List<Integration.Data.Models.Models.Permission>();
@@ -31,6 +40,7 @@ public class PermissionRepository : IPermissionRepository
         return permissions;
     }
 
+    /// <inheritdoc />
     public void AddRight(RightDto right)
     {
         switch (right.Permission)
@@ -45,12 +55,14 @@ public class PermissionRepository : IPermissionRepository
         }
     }
 
+    /// <inheritdoc />
     public IEnumerable<string> GetUserPermissions(string login)
     {
         return _repository.GetByPredicate<UserRequestRight>(x => x.UserId == login)
             .Select(x => x.RightId.ToString());
     }
 
+    /// <inheritdoc />
     public void RemoveUserPermission(RightDto right)
     {
         switch (right.Permission)

@@ -4,8 +4,12 @@ using Task.Connector.Domain;
 
 namespace Task.Connector.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация безопасности.
+/// </summary>
 internal class SecurityConfiguration : IEntityTypeConfiguration<Security>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<Security> builder)
     {
         builder.ToTable("Passwords");

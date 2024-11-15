@@ -8,6 +8,9 @@ using Task.Integration.Data.Models;
 
 namespace Task.Connector.DependencyInjection;
 
+/// <summary>
+/// Локатор сервисов.
+/// </summary>
 public class ServiceLocator : IDisposable
 {
     private bool _disposed = false;
@@ -16,6 +19,10 @@ public class ServiceLocator : IDisposable
     private string? _provider;
     private string? _schema;
 
+    /// <summary>
+    /// Инициализирует новый экземпляр класса <see cref="ServiceLocator"/> с заданной строкой подключения.
+    /// </summary>
+    /// <param name="dbConnection">Строка подключения к базе данных.</param>
     public ServiceLocator(DbConnectionStringBuilder dbConnection)
     {
         _connectionString = dbConnection["connectionstring"]?.ToString();
@@ -32,18 +39,34 @@ public class ServiceLocator : IDisposable
         _serviceProvider = services.BuildServiceProvider();
     }
 
-    public T GetService<T>()
+    /// <summary>
+    /// Получает сервис указанного типа.
+    /// </summary>
+    /// <typeparam name="TService">Тип сервиса.</typeparam>
+    /// <returns>Экземпляр сервиса типа <typeparamref name="TService"/>.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если сервис не найден.</exception>
+    public TService GetService<TService>()
     {
-        var service = _serviceProvider.GetService<T>();
+        var service = _serviceProvider.GetService<TService>();
         return service ?? throw new ArgumentNullException();
     }
 
-    public T GetService<T>(params object[] parameters)
+    /// <summary>
+    /// Получает сервис указанного типа с параметрами.
+    /// </summary>
+    /// <typeparam name="TService">Тип сервиса.</typeparam>
+    /// <param name="parameters">Параметры для создания сервиса.</param>
+    /// <returns>Экземпляр сервиса типа <typeparamref name="TService"/>.</returns>
+    /// <exception cref="ArgumentNullException">Выбрасывается, если сервис не найден.</exception>
+    public TService GetService<TService>(params object[] parameters)
     {
-        var service = (T)ActivatorUtilities.CreateInstance(_serviceProvider, typeof(T), parameters);
+        var service = (TService)ActivatorUtilities.CreateInstance(_serviceProvider, typeof(TService), parameters);
         return service ?? throw new ArgumentNullException();
     }
 
+    /// <summary>
+    /// Высвобождает выделенные ресурсы для этого контекста.
+    /// </summary>
     public void Dispose()
     {
         if (!_disposed)

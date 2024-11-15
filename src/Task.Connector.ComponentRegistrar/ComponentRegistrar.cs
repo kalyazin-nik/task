@@ -8,8 +8,16 @@ using Task.Connector.DataAccess.Repositories.Repository;
 
 namespace Task.Connector.ComponentRegistrar;
 
+/// <summary>
+/// Регистраци компонентов.
+/// </summary>
 public static class ComponentRegistrar
 {
+    /// <summary>
+    /// Добавление сервисов приложения.
+    /// </summary>
+    /// <param name="services">Сервис контрактов для набора дескрипторов служб.</param>
+    /// <returns>Дополненный сервис контрактов.</returns>
     public static IServiceCollection AddApplicationService(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();

@@ -7,12 +7,18 @@ using Task.Integration.Data.Models.Models;
 
 namespace Task.Connector.Connector;
 
+/// <summary>
+/// Подключение к базе данных.
+/// </summary>
 public class ConnectorDb : IConnector, IDisposable
 {
     private bool _disposed = false;
     private ServiceLocator _serviceLocator = null!;
     private ILogger _logger = null!;
 
+    /// <summary>
+    /// Логгер.
+    /// </summary>
     public ILogger Logger
     {
         get => _logger;
@@ -30,7 +36,7 @@ public class ConnectorDb : IConnector, IDisposable
     }
 
     /// <summary>
-    /// Конфигурация коннектора через строку подключения.
+    /// Запуск подключения к базе данных через строку подключения.
     /// </summary>
     /// <param name="connectionString">Строка подключения.</param>
     public void StartUp(string connectionString)
@@ -45,7 +51,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="user">Модель создания пользователя.</param>
     public void CreateUser(UserToCreate user)
     {
-        _serviceLocator.GetService<IUserService>().CreateAsync(user);
+        _serviceLocator.GetService<IUserService>().Create(user);
     }
 
     /// <summary>
@@ -55,7 +61,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Вернёт <see langword="true"/>, если пользователь существует, иначе <see langword="false"/>.</returns>
     public bool IsUserExists(string userLogin)
     {
-        return _serviceLocator.GetService<IUserService>().IsExistAsync(userLogin);
+        return _serviceLocator.GetService<IUserService>().IsExist(userLogin);
     }
 
     /// <summary>
@@ -74,7 +80,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция значений.</returns>
     public IEnumerable<UserProperty> GetUserProperties(string userLogin)
     {
-        return _serviceLocator.GetService<IUserService>().GetUserPropertiesAsync(userLogin);
+        return _serviceLocator.GetService<IUserService>().GetUserProperties(userLogin);
     }
 
     /// <summary>
@@ -126,6 +132,9 @@ public class ConnectorDb : IConnector, IDisposable
         return _serviceLocator.GetService<IPermissionService>().GetUserPermissions(userLogin);
     }
 
+    /// <summary>
+    /// Высвобождает выделенные ресурсы для этого контекста.
+    /// </summary>
     public void Dispose()
     {
         if (!_disposed)
