@@ -4,6 +4,7 @@ using Task.Connector.DataAccess.Repositories.Repository;
 using Task.Connector.Domain;
 using Task.Connector.Infrastructure.Extensions;
 using Task.Integration.Data.Models;
+using Task.Integration.Data.Models.Models;
 
 namespace Task.Connector.DataAccess.Repositories;
 
@@ -13,29 +14,30 @@ namespace Task.Connector.DataAccess.Repositories;
 public class PermissionRepository : IPermissionRepository
 {
     private readonly IRepository<ConnectorDbContext> _repository;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="PermissionRepository"/>.
     /// </summary>
     /// <param name="repository">Репозиторий.</param>
     /// <param name="logger">Логгер.</param>
-    public PermissionRepository(IRepository<ConnectorDbContext> repository, ILogger logger)
+    public PermissionRepository(IRepository<ConnectorDbContext> repository, ILogger? logger)
     {
         _repository = repository;
         _logger = logger;
     }
 
     /// <inheritdoc />
-    public IEnumerable<Integration.Data.Models.Models.Permission> GetAllPermissions()
+    public IEnumerable<Permission> GetAllPermissions()
     {
-        var permissions = new List<Integration.Data.Models.Models.Permission>();
+        _logger?.Debug("Начался поиск прав/ролей в репозитории.");
+        var permissions = new List<Permission>();
 
         _repository.GetAll<ItRole>()
-            .ForEach(x => permissions.Add(new Integration.Data.Models.Models.Permission(x.Id.ToString(), x.Name, x.CorporatePhoneNumber)));
+            .ForEach(x => permissions.Add(new Permission(x.Id.ToString(), x.Name, x.CorporatePhoneNumber)));
 
         _repository.GetAll<RequestRight>()
-            .ForEach(x => permissions.Add(new Integration.Data.Models.Models.Permission(x.Id.ToString(), x.Name, string.Empty)));
+            .ForEach(x => permissions.Add(new Permission(x.Id.ToString(), x.Name, string.Empty)));
 
         return permissions;
     }
@@ -43,6 +45,7 @@ public class PermissionRepository : IPermissionRepository
     /// <inheritdoc />
     public void AddRight(RightDto right)
     {
+        _logger?.Debug("Началось добавление прав/ролей пользователю в репозитории.");
         switch (right.Permission)
         {
             case Infrastructure.Common.Enums.Permissions.Role:
@@ -58,6 +61,7 @@ public class PermissionRepository : IPermissionRepository
     /// <inheritdoc />
     public IEnumerable<string> GetUserPermissions(string login)
     {
+        _logger?.Debug("Начался поиск прав/ролей пользователя в репозитории.");
         return _repository.GetByPredicate<UserRequestRight>(x => x.UserId == login)
             .Select(x => x.RightId.ToString());
     }
@@ -65,6 +69,7 @@ public class PermissionRepository : IPermissionRepository
     /// <inheritdoc />
     public void RemoveUserPermission(RightDto right)
     {
+        _logger?.Debug("Началось удаление прав/ролей пользователя в репозитории.");
         switch (right.Permission)
         {
             case Infrastructure.Common.Enums.Permissions.Role:
