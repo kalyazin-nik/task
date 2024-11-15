@@ -4,8 +4,12 @@ using Task.Connector.Domain;
 
 namespace Task.Connector.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация роли.
+/// </summary>
 internal class ItRoleConfiguration : IEntityTypeConfiguration<ItRole>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<ItRole> builder)
     {
         builder.ToTable("ItRole");

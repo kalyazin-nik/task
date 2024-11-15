@@ -4,8 +4,12 @@ using Task.Connector.Domain;
 
 namespace Task.Connector.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация права доступа пользователя.
+/// </summary>
 internal class UserRequestRightConfiguration : IEntityTypeConfiguration<UserRequestRight>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<UserRequestRight> builder)
     {
         builder.ToTable("UserRequestRight");

@@ -4,8 +4,12 @@ using Task.Connector.Domain;
 
 namespace Task.Connector.DataAccess.Configurations;
 
+/// <summary>
+/// Конфигурация пользователя.
+/// </summary>
 internal class UserConfiguration : IEntityTypeConfiguration<User>
 {
+    /// <inheritdoc />
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("User");

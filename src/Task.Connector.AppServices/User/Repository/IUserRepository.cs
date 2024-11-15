@@ -2,17 +2,49 @@
 
 namespace Task.Connector.AppServices.User.Repository;
 
+/// <summary>
+/// Репозиторий пользователя.
+/// </summary>
 public interface IUserRepository
 {
-    void CreateAsync(UserDto model);
+    /// <summary>
+    /// Создать пользователя.
+    /// </summary>
+    /// <param name="model"></param>
+    void Create(UserDto model);
 
-    bool IsExistAsync(string login);
+    /// <summary>
+    /// Существует ли пользователь.
+    /// </summary>
+    /// <param name="login">Логин.</param>
+    /// <returns>Вернет <see langword="true"/>, если запись пользователя создана, иначе <see langword="false"/>.</returns>
+    bool IsExist(string login);
 
-    UserDto GetUserDtoAsync(string login);
+    /// <summary>
+    /// Получить пользователя.
+    /// </summary>
+    /// <param name="login">Логин.</param>
+    /// <returns>Пользовател.</returns>
+    UserDto GetUserDto(string login);
 
-    UserPropertiesDto GetUserPropertiesDtoAsync(string login);
+    /// <summary>
+    /// Получить свойства пользователя.
+    /// </summary>
+    /// <param name="login">Логин.</param>
+    /// <returns>Свойства пользователя.</returns>
+    UserPropertiesDto GetUserPropertiesDto(string login);
 
-    UserAllPropertiesDto GetUserAllPropertiesDtoAsync(string login);
+    /// <summary>
+    /// Получить все свойства пользователя.
+    /// </summary>
+    /// <param name="login">Логин.</param>
+    /// <returns>Все свойства пользователя.</returns>
+    UserAllPropertiesDto GetUserAllPropertiesDto(string login);
 
-    void UpdateAsync(string login, UserPropertiesDto model);
+    /// <summary>
+    /// Обновить пользователя.
+    /// </summary>
+    /// <param name="login">Логин.</param>
+    /// <param name="model">Свойств пользователя.</param>
+    void Update(string login, UserPropertiesDto model);
 }
