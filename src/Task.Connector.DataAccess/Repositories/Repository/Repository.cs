@@ -16,13 +16,13 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
         _logger = logger;
     }
 
-    public void CreateAsync<TEntity>(TEntity entity) where TEntity : EntityBase
+    public void Create<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Add(entity);
         DbContext.SaveChanges();
     }
 
-    public TEntity? FindAsync<TEntity>(object id) where TEntity : EntityBase
+    public TEntity? Get<TEntity>(object id) where TEntity : EntityBase
     {
         return DbContext.Set<TEntity>().Find(id);
     }
@@ -37,22 +37,29 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
         return DbContext.Set<TEntity>().Where(predicate).AsQueryable();
     }
 
-    public void RemoveAsync<TEntity>(object id) where TEntity : EntityBase
+    public void Remove<TEntity>(object id) where TEntity : EntityBase
     {
         if (DbContext.Set<TEntity>().Find(id) is TEntity entity)
         {
-            DbContext.Set<TEntity>().Remove(entity);
-            DbContext.SaveChanges();
+            Remove(entity);
         }
     }
 
-    public void RemoveAsync<TEntity>(TEntity entity) where TEntity : EntityBase
+    public void Remove<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Remove(entity);
         DbContext.SaveChanges();
     }
 
-    public void UpdateAsync<TEntity>(TEntity entity) where TEntity : EntityBase
+    public void RemoveByPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : EntityBase
+    {
+        if (GetByPredicate(predicate).FirstOrDefault() is TEntity entity)
+        {
+            Remove(entity);
+        }
+    }
+
+    public void Update<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Update(entity);
         DbContext.SaveChanges();

@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Task.Connector.AppServices.Permission.Service;
 using Task.Connector.AppServices.User.Service;
 using Task.Connector.DependencyInjection;
 using Task.Integration.Data.Models;
@@ -92,7 +93,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция прав.</returns>
     public IEnumerable<Permission> GetAllPermissions() //  (смотри Описание системы клиента)
     {
-        throw new NotImplementedException();
+        return _serviceLocator.GetService<IPermissionService>().GetAllPermissions();
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="rightIds">Коллекция идентификаторв прав.</param>
     public void AddUserPermissions(string userLogin, IEnumerable<string> rightIds)
     {
-        throw new NotImplementedException();
+        _serviceLocator.GetService<IPermissionService>().AddUserPermissions(userLogin, rightIds);
     }
 
     /// <summary>
@@ -112,7 +113,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="rightIds">Коллекция идентификаторов прав.</param>
     public void RemoveUserPermissions(string userLogin, IEnumerable<string> rightIds)
     {
-        throw new NotImplementedException();
+        _serviceLocator.GetService<IPermissionService>().RemoveUserPermissions(userLogin, rightIds);
     }
 
     /// <summary>
@@ -122,7 +123,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция идентификаторов прав.</returns>
     public IEnumerable<string> GetUserPermissions(string userLogin)
     {
-        throw new NotImplementedException();
+        return _serviceLocator.GetService<IPermissionService>().GetUserPermissions(userLogin);
     }
 
     public void Dispose()

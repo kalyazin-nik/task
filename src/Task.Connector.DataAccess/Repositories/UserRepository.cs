@@ -26,32 +26,32 @@ public class UserRepository : IUserRepository
         var security = _mapper.Map<Security>(model);
         user.Security = security;
 
-        _repository.CreateAsync(user);
+        _repository.Create(user);
     }
 
     public bool IsExistAsync(string login)
     {
-        return _repository.FindAsync<User>(login) is not null;
+        return _repository.Get<User>(login) is not null;
     }
 
     public UserDto GetUserDtoAsync(string login)
     {
-        return _mapper.Map<UserDto>(_repository.FindAsync<User>(login));
+        return _mapper.Map<UserDto>(_repository.Get<User>(login));
     }
 
     public UserPropertiesDto GetUserPropertiesDtoAsync(string login)
     {
-        return _mapper.Map<UserPropertiesDto>(_repository.FindAsync<User>(login));
+        return _mapper.Map<UserPropertiesDto>(_repository.Get<User>(login));
     }
 
     public UserAllPropertiesDto GetUserAllPropertiesDtoAsync(string login)
     {
-        return _mapper.Map<UserAllPropertiesDto>(_repository.FindAsync<User>(login));
+        return _mapper.Map<UserAllPropertiesDto>(_repository.Get<User>(login));
     }
 
     public void UpdateAsync(string login, UserPropertiesDto model)
     {
-        if (_repository.FindAsync<User>(login) is User user)
+        if (_repository.Get<User>(login) is User user)
         {
             user.FirstName = string.IsNullOrWhiteSpace(model.FirstName) ? user.FirstName : model.FirstName;
             user.LastName = string.IsNullOrWhiteSpace(model.LastName) ? user.LastName : model.LastName;
@@ -59,7 +59,7 @@ public class UserRepository : IUserRepository
             user.TelephoneNumber = string.IsNullOrWhiteSpace(model.TelephoneNumber) ? user.TelephoneNumber : model.TelephoneNumber;
             user.IsLead = string.IsNullOrWhiteSpace(model.IsLead) ? user.IsLead : bool.Parse(model.IsLead);
 
-            _repository.UpdateAsync(user);
+            _repository.Update(user);
         }
     }
 }
