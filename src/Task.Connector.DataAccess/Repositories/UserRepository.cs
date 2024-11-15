@@ -32,6 +32,7 @@ public class UserRepository : IUserRepository
     /// <inheritdoc />
     public void Create(UserDto model)
     {
+        _logger?.Debug("Началось создание пользователя в репозитории.");
         var user = _mapper.Map<User>(model);
         var security = _mapper.Map<Security>(model);
         user.Security = security;
@@ -42,30 +43,35 @@ public class UserRepository : IUserRepository
     /// <inheritdoc />
     public bool IsExist(string login)
     {
+        _logger?.Debug("Начался поиск пользователя в репозитории.");
         return _repository.Get<User>(login) is not null;
     }
 
     /// <inheritdoc />
     public UserDto GetUserDto(string login)
     {
+        _logger?.Debug("Начался поиск пользователя в репозитории.");
         return _mapper.Map<UserDto>(_repository.Get<User>(login));
     }
 
     /// <inheritdoc />
     public UserPropertiesDto GetUserPropertiesDto(string login)
     {
+        _logger?.Debug("Начался поиск пользователя в репозитории.");
         return _mapper.Map<UserPropertiesDto>(_repository.Get<User>(login));
     }
 
     /// <inheritdoc />
     public UserAllPropertiesDto GetUserAllPropertiesDto(string login)
     {
+        _logger?.Debug("Начался поиск пользователя в репозитории.");
         return _mapper.Map<UserAllPropertiesDto>(_repository.Get<User>(login));
     }
 
     /// <inheritdoc />
     public void Update(string login, UserPropertiesDto model)
     {
+        _logger?.Debug("Началось обновление пользователя в репозитории.");
         if (_repository.Get<User>(login) is User user)
         {
             user.FirstName = string.IsNullOrWhiteSpace(model.FirstName) ? user.FirstName : model.FirstName;

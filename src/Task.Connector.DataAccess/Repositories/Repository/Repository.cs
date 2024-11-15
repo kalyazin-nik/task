@@ -29,30 +29,50 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
     public void Create<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Add(entity);
-        DbContext.SaveChanges();
+        _logger?.Debug("Сущность добавлена.");
+        SaveChanges();
     }
 
     /// <inheritdoc />
     public TEntity? Get<TEntity>(object id) where TEntity : EntityBase
     {
-        return DbContext.Set<TEntity>().Find(id);
+
+        var entity = DbContext.Set<TEntity>().Find(id);
+        _logger?.Debug("Поиск завершен.");
+        if (entity is null)
+        {
+            _logger?.Warn("Сущность не найдена.");
+        }
+
+        return entity;
     }
 
     /// <inheritdoc />
     public IQueryable<TEntity> GetAll<TEntity>() where TEntity : EntityBase
     {
-        return DbContext.Set<TEntity>().AsQueryable();
+        var entities = DbContext.Set<TEntity>().AsQueryable();
+        _logger?.Debug("Поиск завершен.");
+        return entities;
     }
 
     /// <inheritdoc />
     public IQueryable<TEntity> GetByPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : EntityBase
     {
-        return DbContext.Set<TEntity>().Where(predicate).AsQueryable();
+        var entities = DbContext.Set<TEntity>().Where(predicate).AsQueryable();
+        _logger?.Debug("Поиск завершен.");
+        if (!entities.Any())
+        {
+            _logger?.Warn("Ни чего не найдено.");
+        }
+
+        return entities;
+
     }
 
     /// <inheritdoc />
     public void Remove<TEntity>(object id) where TEntity : EntityBase
     {
+        _logger?.Debug($"Поиск сущности. Идентификатор: {id}");
         if (DbContext.Set<TEntity>().Find(id) is TEntity entity)
         {
             Remove(entity);
@@ -63,12 +83,14 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
     public void Remove<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Remove(entity);
-        DbContext.SaveChanges();
+        _logger?.Debug("Удаление выполнено.");
+        SaveChanges();
     }
 
     /// <inheritdoc />
     public void RemoveByPredicate<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : EntityBase
     {
+        _logger?.Debug($"Поиск сущности по условию.");
         if (GetByPredicate(predicate).FirstOrDefault() is TEntity entity)
         {
             Remove(entity);
@@ -79,6 +101,20 @@ public class Repository<TContext> : IRepository<TContext> where TContext : DbCon
     public void Update<TEntity>(TEntity entity) where TEntity : EntityBase
     {
         DbContext.Set<TEntity>().Update(entity);
-        DbContext.SaveChanges();
+        _logger?.Debug("Обновление завершено.");
+        SaveChanges();
+    }
+
+    private void SaveChanges()
+    {
+        try
+        {
+            DbContext.SaveChanges();
+            _logger?.Debug("Изменения сохранены.");
+        }
+        catch (Exception ex)
+        {
+            _logger?.Error($"{ex.Message}");
+        }
     }
 }
