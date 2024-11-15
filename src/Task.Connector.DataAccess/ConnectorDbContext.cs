@@ -25,7 +25,12 @@ public class ConnectorDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(_schema);
+
         modelBuilder.Entity<User>().HasOne(u => u.Security).WithOne(s => s.User).HasForeignKey<Security>(s => s.UserId);
+        modelBuilder.Entity<User>().HasMany(u => u.UserItRoles).WithOne(uir => uir.User).HasForeignKey(uir => uir.UserId);
+        modelBuilder.Entity<User>().HasMany(u => u.UserRequestRights).WithOne(urr => urr.User).HasForeignKey(urr => urr.UserId);
+        modelBuilder.Entity<UserItRole>().HasOne(uir => uir.ItRole).WithMany(ir => ir.UserItRoles).HasForeignKey(uir => uir.RoleId);
+        modelBuilder.Entity<UserRequestRight>().HasOne(urr => urr.RequestRight).WithMany(rr => rr.UserRequestRights).HasForeignKey(urr => urr.RightId);
 
         modelBuilder.ApplyConfiguration(new ItRoleConfiguration());
         modelBuilder.ApplyConfiguration(new SecurityConfiguration());
