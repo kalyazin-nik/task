@@ -11,7 +11,7 @@ namespace Task.Connector.Tests
         static string itRoleRightGroupName = "Role";
         static string delimeter = ":";
         static string mssqlConnectionString = "";
-        private static readonly string postgreConnectionString = "server=host.docker.internal;port=5432;database=test_db;username=user;password=12345678";
+        private static readonly string postgreConnectionString = "server=localhost;port=5432;database=test_db;username=user;password=12345678";
         static Dictionary<string, string> connectorsCS = new Dictionary<string, string>
         {
             { "MSSQL",$"ConnectionString='{mssqlConnectionString}';Provider='SqlServer.2019';SchemaName='AvanpostIntegrationTestTaskSchema';"},

@@ -34,6 +34,7 @@ public class UserService : IUserService
     {
         if (!IsExist(userToCreate.Login))
         {
+            _logger?.Debug($"Выполняется подготовка модели пользователя для последующего создания. Логин: {userToCreate.Login}");
             var model = _mapper.Map<UserDto>(userToCreate);
             userToCreate.Properties.ForEach(x => model[x.Name] = x.Value);
 
@@ -44,12 +45,14 @@ public class UserService : IUserService
     /// <inheritdoc />
     public bool IsExist(string login)
     {
+        _logger?.Debug($"Выполняется проверка на существование пользователя в системе. Логин: {login}");
         return _userRepository.IsExist(login);
     }
 
     /// <inheritdoc />
     public IEnumerable<Property> GetAllProperties()
     {
+        _logger?.Debug("Выполняется получение всех свойств пользователя.");
         return typeof(UserAllPropertiesDto)
             .GetProperties()
             .Select(x => new Property(x.Name, string.Empty))
@@ -59,6 +62,7 @@ public class UserService : IUserService
     /// <inheritdoc />
     public IEnumerable<UserProperty> GetUserProperties(string login)
     {
+        _logger?.Debug($"Выполняется подгтовка запроса получения значений свойств пользователя. Логин: {login}");
         var properties = new List<UserProperty>();
         var model = _userRepository.GetUserPropertiesDto(login);
         typeof(UserPropertiesDto)
@@ -72,6 +76,7 @@ public class UserService : IUserService
     /// <inheritdoc />
     public void UpdateUserProperties(string login, IEnumerable<UserProperty> properties)
     {
+        _logger?.Debug($"Выполняется подгтовка запроса получения значений свойств пользователя. Логин: {login}");
         var model = new UserPropertiesDto();
         properties.ForEach(x => model[x.Name] = x.Value);
         _userRepository.Update(login, model);

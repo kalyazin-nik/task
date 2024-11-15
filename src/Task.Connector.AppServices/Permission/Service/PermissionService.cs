@@ -15,14 +15,14 @@ namespace Task.Connector.AppServices.Permission.Service;
 public class PermissionService : IPermissionService
 {
     private readonly IPermissionRepository _permissionRepository;
-    private readonly ILogger _logger;
+    private readonly ILogger? _logger;
 
     /// <summary>
     /// Инициализирует новый экземпляр класса <see cref="PermissionService"/>.
     /// </summary>
     /// <param name="permissionRepository">Репозиторий прав доступа и ролей.</param>
     /// <param name="logger">Логгер.</param>
-    public PermissionService(IPermissionRepository permissionRepository, ILogger logger)
+    public PermissionService(IPermissionRepository permissionRepository, ILogger? logger)
     {
         _permissionRepository = permissionRepository;
         _logger = logger;
@@ -31,33 +31,38 @@ public class PermissionService : IPermissionService
     /// <inheritdoc />
     public IEnumerable<Models.Permission> GetAllPermissions()
     {
+        _logger?.Debug("Выполняется получение всех прав доступа.");
         return _permissionRepository.GetAllPermissions();
     }
 
     /// <inheritdoc />
     public void AddUserPermissions(string login, IEnumerable<string> rightIds)
     {
+        _logger?.Debug($"Выполняется добавление прав пользователю. Логин {login}");
         ExecuteAction(_permissionRepository.AddRight, login, rightIds);
     }
 
     /// <inheritdoc />
     public IEnumerable<string> GetUserPermissions(string login)
     {
+        _logger?.Debug($"Выполняется получение прав доступа/ролей пользователя. Логин {login}");
         return _permissionRepository.GetUserPermissions(login);
     }
 
     /// <inheritdoc />
     public void RemoveUserPermissions(string login, IEnumerable<string> rightIds)
     {
+        _logger?.Debug($"Выполняется удаление прав пользователю. Логин {login}");
         ExecuteAction(_permissionRepository.RemoveUserPermission, login, rightIds);
     }
 
-    private static void ExecuteAction(Action<RightDto> action, string login, IEnumerable<string> rightIds)
+    private void ExecuteAction(Action<RightDto> action, string login, IEnumerable<string> rightIds)
     {
-        rightIds.ForEach(x =>
+        rightIds.ForEach(right =>
         {
-            var data = x.Split(Delimiter.Default).ToArray();
+            var data = right.Split(Delimiter.Default).ToArray();
             Enum.TryParse(data[0], out Permissions permission);
+            _logger?.Debug(right);
             action(new RightDto
             {
                 Login = login,
