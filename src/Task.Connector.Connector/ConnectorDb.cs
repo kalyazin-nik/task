@@ -51,6 +51,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="user">Модель создания пользователя.</param>
     public void CreateUser(UserToCreate user)
     {
+        Logger.Debug("Создание пользователя с набором свойств.");
         _serviceLocator.GetService<IUserService>().Create(user);
     }
 
@@ -61,6 +62,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Вернёт <see langword="true"/>, если пользователь существует, иначе <see langword="false"/>.</returns>
     public bool IsUserExists(string userLogin)
     {
+        Logger.Debug("Проверка на существование пользователя.");
         return _serviceLocator.GetService<IUserService>().IsExist(userLogin);
     }
 
@@ -70,6 +72,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция свойств.</returns>
     public IEnumerable<Property> GetAllProperties()
     {
+        Logger.Debug("Получение всех свойств пользователя.");
         return _serviceLocator.GetService<IUserService>().GetAllProperties();
     }
 
@@ -80,6 +83,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция значений.</returns>
     public IEnumerable<UserProperty> GetUserProperties(string userLogin)
     {
+        Logger.Debug("Получение всех значений свойств пользователя.");
         return _serviceLocator.GetService<IUserService>().GetUserProperties(userLogin);
     }
 
@@ -90,6 +94,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="userLogin">Логин пользователя.</param>
     public void UpdateUserProperties(IEnumerable<UserProperty> properties, string userLogin)
     {
+        Logger.Debug("Обновление значений свойств пользователя.");
         _serviceLocator.GetService<IUserService>().UpdateUserProperties(userLogin, properties);
     }
 
@@ -99,6 +104,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция прав.</returns>
     public IEnumerable<Permission> GetAllPermissions() //  (смотри Описание системы клиента)
     {
+        Logger.Debug("Получение всех прав в системе.");
         return _serviceLocator.GetService<IPermissionService>().GetAllPermissions();
     }
 
@@ -109,6 +115,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="rightIds">Коллекция идентификаторв прав.</param>
     public void AddUserPermissions(string userLogin, IEnumerable<string> rightIds)
     {
+        Logger.Debug("Добавление прав пользователя в системе.");
         _serviceLocator.GetService<IPermissionService>().AddUserPermissions(userLogin, rightIds);
     }
 
@@ -119,6 +126,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <param name="rightIds">Коллекция идентификаторов прав.</param>
     public void RemoveUserPermissions(string userLogin, IEnumerable<string> rightIds)
     {
+        Logger.Debug("Удаление прав прользователя в системе.");
         _serviceLocator.GetService<IPermissionService>().RemoveUserPermissions(userLogin, rightIds);
     }
 
@@ -129,6 +137,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// <returns>Коллекция идентификаторов прав.</returns>
     public IEnumerable<string> GetUserPermissions(string userLogin)
     {
+        Logger.Debug("Получение прав пользователя в системе.");
         return _serviceLocator.GetService<IPermissionService>().GetUserPermissions(userLogin);
     }
 
@@ -137,6 +146,7 @@ public class ConnectorDb : IConnector, IDisposable
     /// </summary>
     public void Dispose()
     {
+        Logger.Debug("Высвобоздение ресурсов в коннекторе.");
         if (!_disposed)
         {
             _disposed = true;
